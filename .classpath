@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/ormlite-core-4.48.jar"/>
+	<classpathentry kind="lib" path="libs/ormlite-jdbc-4.48.jar"/>
+	<classpathentry kind="lib" path="libs/mysql-connector-java-5.1.29-bin.jar"/>
+	<classpathentry kind="lib" path="libs/log4j_api_2.0.jar"/>
+	<classpathentry kind="lib" path="libs/log4j_core_2.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
