@@ -221,4 +221,14 @@ public class DatabaseManager {
 		
 		return new ArrayList<Media>();
 	}
+	
+	public List<Media> getAllMedia(){
+		try {
+			return getMediaDao().queryForAll();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<Media>();
+	}
 }
