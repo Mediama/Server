@@ -5,5 +5,5 @@
 *.war
 *.ear
 /bin
-/libs
+/WEB-INF/lib
 *~
