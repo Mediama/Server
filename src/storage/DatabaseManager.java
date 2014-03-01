@@ -2,6 +2,8 @@ package storage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,10 +18,11 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import entity.AssMediaSpinneret;
+import entity.AssMediaMatter;
 import entity.Level;
 import entity.Matter;
 import entity.Media;
+import entity.Rate;
 import entity.Spinneret;
 import entity.User;
 
@@ -28,7 +31,7 @@ import entity.User;
  * the DAOs used by the other classes.
  */
 public class DatabaseManager {
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private static final String HOST="host";
 	private static final String LOGIN="login";
 	private static final String PASSWD="passwd";
@@ -42,10 +45,11 @@ public class DatabaseManager {
 
 	private Dao<User, Integer> userDao;
 	private Dao<Media, Integer> mediaDao;
+	private Dao<Rate, Integer> rateDao;
 	private Dao<Matter, Integer> matterDao;
 	private Dao<Spinneret, Integer> spinneretDao;
 	private Dao<Level, Integer> levelDao;
-	private Dao<AssMediaSpinneret, Integer> assMediaSpinDao;
+	private Dao<AssMediaMatter, Integer> assMediaSpinDao;
 	
 	
 	private DatabaseManager(ConnectionSource source){
@@ -101,13 +105,13 @@ public class DatabaseManager {
 		TableUtils.createTable(source, Spinneret.class);
 		TableUtils.createTable(source, Level.class);
 		TableUtils.createTable(source, Matter.class);
-		TableUtils.createTable(source, AssMediaSpinneret.class);
+		TableUtils.createTable(source, AssMediaMatter.class);
 	}
 	
 	private void upgrade(int lastVerison, int newVersion) throws SQLException{
 		log.info(this.getClass().getSimpleName(), "Upgrade database from "+lastVerison+" to "+newVersion);
 		
-		TableUtils.dropTable(source, AssMediaSpinneret.class, true);		
+		TableUtils.dropTable(source, AssMediaMatter.class, true);		
 		TableUtils.dropTable(source, Level.class, true);
 		TableUtils.dropTable(source, Spinneret.class, true);
 		TableUtils.dropTable(source, Matter.class, true);
@@ -119,7 +123,7 @@ public class DatabaseManager {
 		TableUtils.createTable(source, Spinneret.class);
 		TableUtils.createTable(source, Level.class);
 		TableUtils.createTable(source, Matter.class);
-		TableUtils.createTable(source, AssMediaSpinneret.class);
+		TableUtils.createTable(source, AssMediaMatter.class);
 	}
 
 	public Dao<User, Integer> getUserDao() throws SQLException {
@@ -138,6 +142,22 @@ public class DatabaseManager {
 		return mediaDao;
 	}
 
+	public Dao<Rate, Integer> getRateDao() throws SQLException {
+		if(rateDao==null){
+			rateDao=DaoManager.createDao(source, Rate.class);
+		}
+		
+		return rateDao;
+	}
+
+	public Dao<Level, Integer> getLevelDao() throws SQLException {
+		if(levelDao==null){
+			levelDao=DaoManager.createDao(source, Level.class);
+		}
+		
+		return levelDao;
+	}
+	
 	public Dao<Matter, Integer> getMatterDao() throws SQLException {
 		if(matterDao==null){
 			matterDao=DaoManager.createDao(source, Matter.class);
@@ -162,9 +182,9 @@ public class DatabaseManager {
 		return levelDao;
 	}
 
-	public Dao<AssMediaSpinneret, Integer> getAssMediaSpinDao() throws SQLException {
+	public Dao<AssMediaMatter, Integer> getAssMediaSpinDao() throws SQLException {
 		if(assMediaSpinDao==null){
-			assMediaSpinDao=DaoManager.createDao(source, AssMediaSpinneret.class);
+			assMediaSpinDao=DaoManager.createDao(source, AssMediaMatter.class);
 		}
 		
 		return assMediaSpinDao;
@@ -185,5 +205,55 @@ public class DatabaseManager {
 		public String key;
 		@DatabaseField
 		public String value;
+	}
+	
+	public Rate getRate(User user, Media media){
+		try {
+			QueryBuilder<Rate, Integer> query=getRateDao().queryBuilder();
+			query.where().eq("user", user.getId())
+					.and().eq("media", media.getId());
+			
+			return query.queryForFirst();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public List<Media> getMedia(Matter matter){
+		try {
+			QueryBuilder<Media, Integer> queryMedia=getMediaDao().queryBuilder();
+			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaSpinDao().queryBuilder();
+			
+			queryAss.where().eq("matter", matter.getId());
+			queryMedia.join(queryAss);
+			
+			return queryMedia.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<Media>();
+	}
+	
+	public List<Media> getMedia(Level level){
+		try {
+			QueryBuilder<Media, Integer> queryMedia=getMediaDao().queryBuilder();
+			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaSpinDao().queryBuilder();
+			QueryBuilder<Level, Integer> queryLevel=getLevelDao().queryBuilder();
+			QueryBuilder<Spinneret, Integer> querySpinneret=getSpinneretDao().queryBuilder();
+			
+			queryLevel.where().eq("id", level.getId());
+			querySpinneret.join(queryLevel);
+			queryAss.join(querySpinneret);
+			queryMedia.join(queryAss);
+			
+			return queryMedia.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<Media>();
 	}
 }

@@ -2,16 +2,16 @@ package entity;
 
 import com.j256.ormlite.field.DatabaseField;
 
-public class AssMediaSpinneret {
+public class AssMediaMatter {
 	@DatabaseField(generatedId=true)
 	private int id;
-	@DatabaseField(foreign=true, foreignAutoRefresh=true)
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true)
 	private Media media;
-	@DatabaseField(foreign=true, foreignAutoRefresh=true)
-	private Spinneret spinneret;
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true)
+	private Matter matter;
 	
 	
-	public AssMediaSpinneret(){
+	public AssMediaMatter(){
 		
 	}
 
@@ -31,11 +31,11 @@ public class AssMediaSpinneret {
 		this.media = media;
 	}
 
-	public Spinneret getSpinneret() {
-		return spinneret;
+	public Matter getMatter() {
+		return matter;
 	}
 
-	public void setSpinneret(Spinneret spinneret) {
-		this.spinneret = spinneret;
+	public void setMatter(Matter matter) {
+		this.matter = matter;
 	}
 }
