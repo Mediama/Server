@@ -5,13 +5,13 @@ import com.j256.ormlite.field.DatabaseField;
 public class Rate {
 	@DatabaseField(generatedId=true)
 	private int id;
-	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true)
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true, canBeNull=false)
 	private Media media;
-	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true)
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true, canBeNull=false)
 	private User user;
-	@DatabaseField
+	@DatabaseField(canBeNull=false)
 	private int rate;
-	@DatabaseField
+	@DatabaseField(canBeNull=true)
 	private String com;
 	
 	

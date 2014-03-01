@@ -19,7 +19,6 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import entity.AssMediaMatter;
-import entity.Level;
 import entity.Matter;
 import entity.Media;
 import entity.Rate;
@@ -48,7 +47,6 @@ public class DatabaseManager {
 	private Dao<Rate, Integer> rateDao;
 	private Dao<Matter, Integer> matterDao;
 	private Dao<Spinneret, Integer> spinneretDao;
-	private Dao<Level, Integer> levelDao;
 	private Dao<AssMediaMatter, Integer> assMediaSpinDao;
 	
 	
@@ -61,13 +59,19 @@ public class DatabaseManager {
 			queryEvent.where().eq("key", DATABASE_VERSION_KEY);
 			Info info=queryEvent.queryForFirst();
 			
-			if(info==null) init();
+			if(info==null){
+				init();
+				
+				info=new Info();
+				info.key=DATABASE_VERSION_KEY;
+				info.value=Integer.toString(DATABASE_VERSION);
+			}
 			else{
 				int lastVersion=Integer.parseInt(info.value);
 				
 				if(lastVersion < DATABASE_VERSION) upgrade(lastVersion, DATABASE_VERSION);
 				
-				info.value=DATABASE_VERSION_KEY;
+				info.value=Integer.toString(DATABASE_VERSION);
 				getInfoDao().createOrUpdate(info);
 			}
 		} catch (SQLException e) {
@@ -103,7 +107,6 @@ public class DatabaseManager {
 		TableUtils.createTable(source, User.class);
 		TableUtils.createTable(source, Media.class);
 		TableUtils.createTable(source, Spinneret.class);
-		TableUtils.createTable(source, Level.class);
 		TableUtils.createTable(source, Matter.class);
 		TableUtils.createTable(source, AssMediaMatter.class);
 	}
@@ -111,8 +114,7 @@ public class DatabaseManager {
 	private void upgrade(int lastVerison, int newVersion) throws SQLException{
 		log.info(this.getClass().getSimpleName(), "Upgrade database from "+lastVerison+" to "+newVersion);
 		
-		TableUtils.dropTable(source, AssMediaMatter.class, true);		
-		TableUtils.dropTable(source, Level.class, true);
+		TableUtils.dropTable(source, AssMediaMatter.class, true);	
 		TableUtils.dropTable(source, Spinneret.class, true);
 		TableUtils.dropTable(source, Matter.class, true);
 		TableUtils.dropTable(source, Media.class, true);
@@ -121,7 +123,6 @@ public class DatabaseManager {
 		TableUtils.createTable(source, User.class);
 		TableUtils.createTable(source, Media.class);
 		TableUtils.createTable(source, Spinneret.class);
-		TableUtils.createTable(source, Level.class);
 		TableUtils.createTable(source, Matter.class);
 		TableUtils.createTable(source, AssMediaMatter.class);
 	}
@@ -149,14 +150,6 @@ public class DatabaseManager {
 		
 		return rateDao;
 	}
-
-	public Dao<Level, Integer> getLevelDao() throws SQLException {
-		if(levelDao==null){
-			levelDao=DaoManager.createDao(source, Level.class);
-		}
-		
-		return levelDao;
-	}
 	
 	public Dao<Matter, Integer> getMatterDao() throws SQLException {
 		if(matterDao==null){
@@ -172,14 +165,6 @@ public class DatabaseManager {
 		}
 		
 		return spinneretDao;
-	}
-
-	public Dao<Level, Integer> getSimpleGeofenceDao() throws SQLException {
-		if(levelDao==null){
-			levelDao=DaoManager.createDao(source, Level.class);
-		}
-		
-		return levelDao;
 	}
 
 	public Dao<AssMediaMatter, Integer> getAssMediaSpinDao() throws SQLException {
@@ -227,26 +212,6 @@ public class DatabaseManager {
 			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaSpinDao().queryBuilder();
 			
 			queryAss.where().eq("matter", matter.getId());
-			queryMedia.join(queryAss);
-			
-			return queryMedia.query();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return new ArrayList<Media>();
-	}
-	
-	public List<Media> getMedia(Level level){
-		try {
-			QueryBuilder<Media, Integer> queryMedia=getMediaDao().queryBuilder();
-			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaSpinDao().queryBuilder();
-			QueryBuilder<Level, Integer> queryLevel=getLevelDao().queryBuilder();
-			QueryBuilder<Spinneret, Integer> querySpinneret=getSpinneretDao().queryBuilder();
-			
-			queryLevel.where().eq("id", level.getId());
-			querySpinneret.join(queryLevel);
-			queryAss.join(querySpinneret);
 			queryMedia.join(queryAss);
 			
 			return queryMedia.query();

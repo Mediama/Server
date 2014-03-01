@@ -5,7 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 public class Media {
 	@DatabaseField(generatedId=true)
 	private int id;
-	@DatabaseField
+	@DatabaseField(canBeNull=false)
 	private String title;
 	@DatabaseField
 	private Type type;

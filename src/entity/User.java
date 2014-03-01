@@ -5,9 +5,9 @@ import com.j256.ormlite.field.DatabaseField;
 public class User {
 	@DatabaseField(generatedId=true)
 	private int id;
-	@DatabaseField
+	@DatabaseField(canBeNull=false)
 	private String login;
-	@DatabaseField
+	@DatabaseField(canBeNull=false)
 	private String password;
 	@DatabaseField
 	private String email;

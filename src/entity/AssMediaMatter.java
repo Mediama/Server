@@ -5,9 +5,9 @@ import com.j256.ormlite.field.DatabaseField;
 public class AssMediaMatter {
 	@DatabaseField(generatedId=true)
 	private int id;
-	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true)
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true, canBeNull=false)
 	private Media media;
-	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true)
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true, canBeNull=false)
 	private Matter matter;
 	
 	

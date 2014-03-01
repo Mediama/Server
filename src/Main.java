@@ -1,6 +1,8 @@
-import entity.Level;
-import entity.Spinneret;
+import java.sql.SQLException;
+
 import storage.DatabaseManager;
+import entity.Matter;
+import entity.Spinneret;
 
 
 
@@ -18,11 +20,29 @@ public class Main {
 		Spinneret stapps=new Spinneret();
 		stapps.setName("Stapps");
 		
-		Level tiilLvl1=new Level();
-		tiilLvl1.setName("M1");
+		try {
+			manager.getSpinneretDao().deleteBuilder().delete();
+			
+			manager.getSpinneretDao().create(tiil);
+			manager.getSpinneretDao().create(stapps);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		Matter math=new Matter();
+		math.setName("Math");
+		math.setSemester(1);
+		math.setSpinneret(tiil);
+		math.setHours(75);
 		
-		Level tiilLvl2=new Level();
-		tiilLvl2.setName("M2");
+		try {
+			manager.getMatterDao().deleteBuilder().delete();
+			
+			manager.getMatterDao().create(math);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }
