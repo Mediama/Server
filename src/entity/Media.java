@@ -4,7 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 
 public class Media {
 	@DatabaseField(generatedId=true)
-	private int id;
+	private Integer id;
 	@DatabaseField(canBeNull=false)
 	private String title;
 	@DatabaseField
@@ -16,11 +16,11 @@ public class Media {
 		
 	}
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

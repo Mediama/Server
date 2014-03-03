@@ -4,7 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 
 public class Rate {
 	@DatabaseField(generatedId=true)
-	private int id;
+	private Integer id;
 	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true, canBeNull=false)
 	private Media media;
 	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true, canBeNull=false)
@@ -19,11 +19,11 @@ public class Rate {
 		
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

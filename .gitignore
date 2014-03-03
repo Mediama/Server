@@ -4,6 +4,6 @@
 *.jar
 *.war
 *.ear
-/bin
+/build
 /WebContent/WEB-INF/lib
 *~

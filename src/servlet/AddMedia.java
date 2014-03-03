@@ -10,22 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import storage.DatabaseManager;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import entity.Media;
 
 /**
- * Servlet implementation class GetMedia
+ * Servlet implementation class AddMedia
  */
-@WebServlet("/GetMedia")
-public class GetMedia extends HttpServlet {
+@WebServlet("/AddMedia")
+public class AddMedia extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetMedia() {
+    public AddMedia() {
         super();
     }
 
@@ -45,42 +42,51 @@ public class GetMedia extends HttpServlet {
 	
 	private void sendResult(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		DatabaseManager manager=DatabaseManager.getManager();
-		ObjectMapper oMap=new ObjectMapper();
 		
-		String idValue=request.getParameter("id");
-		if(idValue==null){
-			ServletResult.sendResult(response, ServletResult.MISSING_ID);
-			return;
-		}
+		String title=request.getParameter("title");
+		String author=request.getParameter("author");
+		String type=request.getParameter("type");
 		
-		int id;
-		try{
-			id=Integer.parseInt(idValue);			
-		} catch (Exception e) {
-			ServletResult.sendResult(response, ServletResult.BAD_INT_FORMAT);
-			return;
-		}
+		Media.Type mediaType=null;
 		
 		try {
-			Media media=manager.getMediaDao().queryForId(id);
-			
-			if(media==null){
-				ServletResult.sendResult(response, ServletResult.NOT_FOUND);
+			if(title==null){
+				ServletResult.sendResult(response, ServletResult.MISSING_TITLE);
+				return;
+			}
+			else if(author==null){
+				ServletResult.sendResult(response, ServletResult.MISSING_AUTHOR);
 				return;
 			}
 			else{
-				response.getWriter().append(
-						oMap.writeValueAsString(media));
-				
-				response.getWriter().close();		
+				switch (type) {
+				case "document":
+					mediaType=Media.Type.DOC;
+					break;
+				case "movie":
+					mediaType=Media.Type.MOVIE;
+					break;
+				case "sound":
+					mediaType=Media.Type.SOUND;
+					break;
+				default:
+					ServletResult.sendResult(response, ServletResult.MISSING_MEDIA_TYPE);
+					return;
+				}
 			}
 			
+			Media media=new Media();
+			media.setTitle(title);
+			media.setAuthor(author);
+			media.setType(mediaType);
+			
+			ServletResult.sendResult(response,
+					manager.getMediaDao().create(media)==1 ?
+							ServletResult.SUCCESS
+							: ServletResult.ERROR);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
-			ServletResult.sendResult(response, ServletResult.ERROR);
 		}
-		
 	}
 
 }

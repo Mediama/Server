@@ -4,7 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 
 public class AssMediaMatter {
 	@DatabaseField(generatedId=true)
-	private int id;
+	private Integer id;
 	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true, canBeNull=false)
 	private Media media;
 	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true, canBeNull=false)
@@ -15,11 +15,11 @@ public class AssMediaMatter {
 		
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

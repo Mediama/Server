@@ -222,6 +222,24 @@ public class DatabaseManager {
 		return new ArrayList<Media>();
 	}
 	
+	public List<Media> getMedia(Matter matter, Media.Type type){
+		try {
+			QueryBuilder<Media, Integer> queryMedia=getMediaDao().queryBuilder();
+			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaSpinDao().queryBuilder();
+			
+			queryAss.where().eq("matter", matter.getId());
+			
+			queryMedia.join(queryAss);
+			queryMedia.where().eq("type", type);
+			
+			return queryMedia.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<Media>();
+	}
+	
 	public List<Media> getAllMedia(){
 		try {
 			return getMediaDao().queryForAll();
@@ -230,5 +248,30 @@ public class DatabaseManager {
 		}
 		
 		return new ArrayList<Media>();
+	}
+	
+	public List<Spinneret> getAllSpinneret(){
+		try {
+			return getSpinneretDao().queryForAll();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<Spinneret>();
+	}
+	
+	public List<Matter> getMatter(Spinneret spinneret, int semester){
+		try {
+			QueryBuilder<Matter, Integer> query=getMatterDao().queryBuilder();
+			
+			query.where().eq("spinneret", spinneret.getId())
+					.and().eq("semester", semester);
+			
+			return query.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<Matter>();
 	}
 }

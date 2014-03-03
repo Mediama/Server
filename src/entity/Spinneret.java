@@ -4,7 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 
 public class Spinneret {
 	@DatabaseField(generatedId=true)
-	private int id;
+	private Integer id;
 	@DatabaseField(canBeNull=false)
 	private String name;
 	
@@ -12,11 +12,11 @@ public class Spinneret {
 		
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
