@@ -5,7 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 public class User {
 	@DatabaseField(generatedId=true)
 	private Integer id;
-	@DatabaseField(canBeNull=false)
+	@DatabaseField(canBeNull=false, unique=true)
 	private String login;
 	@DatabaseField(canBeNull=false)
 	private String password;

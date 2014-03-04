@@ -33,17 +33,17 @@ public class GetMedia extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		sendResult(request, response);
+		processRequest(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		sendResult(request, response);
+		processRequest(request, response);
 	}
 	
-	private void sendResult(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		DatabaseManager manager=DatabaseManager.getManager();
 		ObjectMapper oMap=new ObjectMapper();
 		
@@ -52,6 +52,8 @@ public class GetMedia extends HttpServlet {
 			ServletResult.sendResult(response, ServletResult.MISSING_ID);
 			return;
 		}
+		
+		System.out.println(request.getQueryString());
 		
 		int id;
 		try{

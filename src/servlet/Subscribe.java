@@ -9,24 +9,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import storage.DatabaseManager;
-import entity.Media;
+import entity.User;
 
 /**
- * Servlet implementation class AddMedia
+ * Servlet implementation class Subscribe
  */
-@WebServlet("/AddMedia")
-public class AddMedia extends HttpServlet {
+@WebServlet("/Subscribe")
+public class Subscribe extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AddMedia() {
+    public Subscribe() {
         super();
     }
 
-    /**
+	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,54 +42,42 @@ public class AddMedia extends HttpServlet {
 		processRequest(request, response);
 	}
 	
-	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	private void processRequest(HttpServletRequest request, HttpServletResponse response){
 		DatabaseManager manager=DatabaseManager.getManager();
 		
-		String title=request.getParameter("title");
-		String author=request.getParameter("author");
-		String type=request.getParameter("type");
-		
-		Media.Type mediaType=null;
+		String login=request.getParameter("login");
+		String password=request.getParameter("password");
+		String email=request.getParameter("email");
 		
 		try {
-			if(title==null){
-				ServletResult.sendResult(response, ServletResult.MISSING_TITLE);
+			if(login==null){
+				ServletResult.sendResult(response, ServletResult.MISSING_EMAIL);
 				return;
 			}
-			else if(author==null){
-				ServletResult.sendResult(response, ServletResult.MISSING_AUTHOR);
+			else if(password==null){
+				ServletResult.sendResult(response, ServletResult.MISSING_PASSWORD);
 				return;
 			}
-			else{
-				switch (type) {
-				case "document":
-					mediaType=Media.Type.DOC;
-					break;
-				case "movie":
-					mediaType=Media.Type.MOVIE;
-					break;
-				case "sound":
-					mediaType=Media.Type.SOUND;
-					break;
-				default:
-					ServletResult.sendResult(response, ServletResult.MISSING_MEDIA_TYPE);
-					return;
-				}
+			else if(email==null){
+				ServletResult.sendResult(response, ServletResult.MISSING_EMAIL);
+				
 			}
 			
-			Media media=new Media();
-			media.setTitle(title);
-			media.setAuthor(author);
-			media.setType(mediaType);
+			User user=new User();
+			user.setLogin(login);
+			user.setEmail(email);
+			user.setPassword(password);
 			
-			if(manager.getMediaDao().create(media)==1){
+			if(manager.getUserDao().create(user)==1){
 				ServletResult.sendResult(response, ServletResult.SUCCESS);
 				response.setStatus(HttpServletResponse.SC_CREATED);
 			}
 			else{
 				ServletResult.sendResult(response, ServletResult.ERROR);
 			}
-		} catch (SQLException e) {
+		} catch (SQLException | JsonProcessingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

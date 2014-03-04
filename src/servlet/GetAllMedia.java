@@ -32,17 +32,17 @@ public class GetAllMedia extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		sendResult(response.getWriter());
+		processRequest(response.getWriter());
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		sendResult(response.getWriter());
+		processRequest(response.getWriter());
 	}
 	
-	private void sendResult(PrintWriter writer) throws JsonProcessingException{
+	private void processRequest(PrintWriter writer) throws JsonProcessingException{
 		DatabaseManager manager=DatabaseManager.getManager();
 		ObjectMapper oMap=new ObjectMapper();
 		
