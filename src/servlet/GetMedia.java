@@ -49,7 +49,7 @@ public class GetMedia extends HttpServlet {
 		
 		String idValue=request.getParameter("id");
 		if(idValue==null){
-			ServletResult.sendResult(response, ServletResult.MISSING_ID);
+			ServletResult.sendResult(response, ServletResult.MISSING_MEDIA_ID);
 			return;
 		}
 		

@@ -53,7 +53,7 @@ public class AssMediaWithMatter extends HttpServlet {
 				mediaId=Integer.parseInt(idMatter);
 			}
 			else{
-				ServletResult.sendResult(response, ServletResult.MISSING_ID);
+				ServletResult.sendResult(response, ServletResult.MISSING_MEDIA_ID);
 				return;
 			}
 			
@@ -70,7 +70,7 @@ public class AssMediaWithMatter extends HttpServlet {
 				ServletResult.sendResult(response, ServletResult.SUCCESS);
 			}
 			else{
-				ServletResult.sendResult(response, ServletResult.MISSING_ID);
+				ServletResult.sendResult(response, ServletResult.MISSING_MEDIA_ID);
 			}
 		} catch (NumberFormatException e ){
 			ServletResult.sendResult(response, ServletResult.BAD_INT_FORMAT);
