@@ -18,10 +18,11 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
+import entity.Formation;
 import entity.Matter;
 import entity.Media;
+import entity.Module;
 import entity.Rate;
-import entity.Formation;
 import entity.User;
 
 /**
@@ -45,8 +46,9 @@ public class DatabaseManager {
 	private Dao<Media, Integer> mediaDao;
 	private Dao<Rate, Integer> rateDao;
 	private Dao<Matter, Integer> matterDao;
-	private Dao<Formation, Integer> spinneretDao;
-	private Dao<AssMediaMatter, Integer> assMediaSpinDao;
+	private Dao<Module, Integer> moduleDao;
+	private Dao<Formation, Integer> formationDao;
+	private Dao<AssMediaMatter, Integer> assMediaMatterDao;
 	
 	
 	private DatabaseManager(ConnectionSource source){
@@ -158,20 +160,28 @@ public class DatabaseManager {
 		return matterDao;
 	}
 
-	public Dao<Formation, Integer> getSpinneretDao() throws SQLException {
-		if(spinneretDao==null){
-			spinneretDao=DaoManager.createDao(source, Formation.class);
+	public Dao<Module, Integer> getModuleDao() throws SQLException {
+		if(moduleDao==null){
+			moduleDao=DaoManager.createDao(source, Module.class);
 		}
 		
-		return spinneretDao;
+		return moduleDao;
+	}
+	
+	public Dao<Formation, Integer> getFormationDao() throws SQLException {
+		if(formationDao==null){
+			formationDao=DaoManager.createDao(source, Formation.class);
+		}
+		
+		return formationDao;
 	}
 
-	public Dao<AssMediaMatter, Integer> getAssMediaSpinDao() throws SQLException {
-		if(assMediaSpinDao==null){
-			assMediaSpinDao=DaoManager.createDao(source, AssMediaMatter.class);
+	protected Dao<AssMediaMatter, Integer> getAssMediaMatterDao() throws SQLException {
+		if(assMediaMatterDao==null){
+			assMediaMatterDao=DaoManager.createDao(source, AssMediaMatter.class);
 		}
 		
-		return assMediaSpinDao;
+		return assMediaMatterDao;
 	}
 	
 	public Dao<Info, Integer> getInfoDao() throws SQLException {
@@ -205,12 +215,50 @@ public class DatabaseManager {
 		return null;
 	}
 	
-	public List<Media> getMedia(Matter matter){
+	public List<Media> getMediaFromMatter(int id){
 		try {
 			QueryBuilder<Media, Integer> queryMedia=getMediaDao().queryBuilder();
-			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaSpinDao().queryBuilder();
+			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaMatterDao().queryBuilder();
 			
-			queryAss.where().eq("matter", matter.getId());
+			queryAss.where().eq("matter_id", id);
+			queryMedia.join(queryAss);
+			
+			return queryMedia.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<Media>();
+	}
+	
+	public List<Media> getMediaFromModule(int id){
+		try {
+			QueryBuilder<Matter, Integer> queryMatter=getMatterDao().queryBuilder();
+			QueryBuilder<Media, Integer> queryMedia=getMediaDao().queryBuilder();
+			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaMatterDao().queryBuilder();
+			
+			queryMatter.where().eq("module_id", id);
+			queryAss.join(queryMatter);
+			queryMedia.join(queryAss);
+			
+			return queryMedia.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<Media>();
+	}
+	
+	public List<Media> getMediaFromFormation(int id){
+		try {
+			QueryBuilder<Module, Integer> queryModule=getModuleDao().queryBuilder();
+			QueryBuilder<Matter, Integer> queryMatter=getMatterDao().queryBuilder();
+			QueryBuilder<Media, Integer> queryMedia=getMediaDao().queryBuilder();
+			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaMatterDao().queryBuilder();
+			
+			queryModule.where().eq("formation_id", id);
+			queryMatter.join(queryModule);
+			queryAss.join(queryMatter);
 			queryMedia.join(queryAss);
 			
 			return queryMedia.query();
@@ -224,7 +272,7 @@ public class DatabaseManager {
 	public List<Media> getMedia(Matter matter, Media.Type type){
 		try {
 			QueryBuilder<Media, Integer> queryMedia=getMediaDao().queryBuilder();
-			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaSpinDao().queryBuilder();
+			QueryBuilder<AssMediaMatter, Integer> queryAss=getAssMediaMatterDao().queryBuilder();
 			
 			queryAss.where().eq("matter", matter.getId());
 			
@@ -251,7 +299,7 @@ public class DatabaseManager {
 	
 	public List<Formation> getAllFormation(){
 		try {
-			return getSpinneretDao().queryForAll();
+			return getFormationDao().queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -259,18 +307,22 @@ public class DatabaseManager {
 		return new ArrayList<Formation>();
 	}
 	
-	public List<Matter> getMatter(Formation spinneret, int semester){
+	public boolean addMediaToMatter(int mediaId, int matterId){
 		try {
-			QueryBuilder<Matter, Integer> query=getMatterDao().queryBuilder();
+			Media media=getMediaDao().queryForId(mediaId);
+			if(media==null) return false;
 			
-			query.where().eq("spinneret", spinneret.getId())
-					.and().eq("semester", semester);
+			Matter matter=getMatterDao().queryForId(matterId);
+			if(matter==null) return false;
 			
-			return query.query();
+			AssMediaMatter ass=new AssMediaMatter();
+			ass.setMedia(media);
+			ass.setMatter(matter);
+			
+			return getAssMediaMatterDao().create(ass)==1;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
-		
-		return new ArrayList<Matter>();
 	}
 }

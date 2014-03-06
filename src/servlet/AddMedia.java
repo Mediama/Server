@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import app.Tools;
+
 import storage.DatabaseManager;
 import entity.Media;
 
@@ -80,13 +82,24 @@ public class AddMedia extends HttpServlet {
 			media.setAuthor(author);
 			media.setType(mediaType);
 			
-			if(manager.getMediaDao().create(media)==1){
-				ServletResult.sendResult(response, ServletResult.SUCCESS);
-				response.setStatus(HttpServletResponse.SC_CREATED);
-			}
-			else{
+			if(manager.getMediaDao().create(media)!=1){
 				ServletResult.sendResult(response, ServletResult.ERROR);
 			}
+			
+			String idMatter=request.getParameter("list_matter_id");
+			if(idMatter!=null){
+				try{
+					for(int id : Tools.toIntList(idMatter, ";")){				
+						manager.addMediaToMatter(media.getId(), id);
+					}
+				} catch (NumberFormatException e ){
+					ServletResult.sendResult(response, ServletResult.BAD_INT_FORMAT);
+					return;
+				}
+			}
+			
+			response.setStatus(HttpServletResponse.SC_CREATED);
+			ServletResult.sendResult(response, ServletResult.SUCCESS);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
