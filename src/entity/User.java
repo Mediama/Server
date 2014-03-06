@@ -9,8 +9,10 @@ public class User {
 	private String login;
 	@DatabaseField(canBeNull=false)
 	private String password;
-	@DatabaseField
+	@DatabaseField(canBeNull=false)
 	private String email;
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, canBeNull=true)
+	private Module module;
 	
 	
 	public User(){

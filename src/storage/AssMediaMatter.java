@@ -1,8 +1,11 @@
-package entity;
+package storage;
 
 import com.j256.ormlite.field.DatabaseField;
 
-public class AssMediaMatter {
+import entity.Matter;
+import entity.Media;
+
+class AssMediaMatter {
 	@DatabaseField(generatedId=true)
 	private Integer id;
 	@DatabaseField(foreign=true, foreignAutoRefresh=true, uniqueCombo=true, canBeNull=false)

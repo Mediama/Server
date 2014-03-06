@@ -7,10 +7,8 @@ public class Matter {
 	private Integer id;
 	@DatabaseField(canBeNull=false)
 	private String name;
-	@DatabaseField(canBeNull=false)
-	private int semester;
 	@DatabaseField(foreign=true, foreignAutoRefresh=true, canBeNull=false)
-	private Spinneret spinneret;
+	private Module module;
 	@DatabaseField
 	private int hours;
 	
@@ -35,20 +33,12 @@ public class Matter {
 		this.name = name;
 	}
 
-	public int getSemester() {
-		return semester;
+	public Module getModule() {
+		return module;
 	}
 
-	public void setSemester(int semester) {
-		this.semester = semester;
-	}
-
-	public Spinneret getSpinneret() {
-		return spinneret;
-	}
-
-	public void setSpinneret(Spinneret spinneret) {
-		this.spinneret = spinneret;
+	public void setModule(Module module) {
+		this.module = module;
 	}
 
 	public int getHours() {

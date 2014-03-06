@@ -18,11 +18,10 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import entity.AssMediaMatter;
 import entity.Matter;
 import entity.Media;
 import entity.Rate;
-import entity.Spinneret;
+import entity.Formation;
 import entity.User;
 
 /**
@@ -46,7 +45,7 @@ public class DatabaseManager {
 	private Dao<Media, Integer> mediaDao;
 	private Dao<Rate, Integer> rateDao;
 	private Dao<Matter, Integer> matterDao;
-	private Dao<Spinneret, Integer> spinneretDao;
+	private Dao<Formation, Integer> spinneretDao;
 	private Dao<AssMediaMatter, Integer> assMediaSpinDao;
 	
 	
@@ -106,7 +105,7 @@ public class DatabaseManager {
 		
 		TableUtils.createTable(source, User.class);
 		TableUtils.createTable(source, Media.class);
-		TableUtils.createTable(source, Spinneret.class);
+		TableUtils.createTable(source, Formation.class);
 		TableUtils.createTable(source, Matter.class);
 		TableUtils.createTable(source, AssMediaMatter.class);
 	}
@@ -115,14 +114,14 @@ public class DatabaseManager {
 		log.info(this.getClass().getSimpleName(), "Upgrade database from "+lastVerison+" to "+newVersion);
 		
 		TableUtils.dropTable(source, AssMediaMatter.class, true);	
-		TableUtils.dropTable(source, Spinneret.class, true);
+		TableUtils.dropTable(source, Formation.class, true);
 		TableUtils.dropTable(source, Matter.class, true);
 		TableUtils.dropTable(source, Media.class, true);
 		TableUtils.dropTable(source, User.class, true);
 		
 		TableUtils.createTable(source, User.class);
 		TableUtils.createTable(source, Media.class);
-		TableUtils.createTable(source, Spinneret.class);
+		TableUtils.createTable(source, Formation.class);
 		TableUtils.createTable(source, Matter.class);
 		TableUtils.createTable(source, AssMediaMatter.class);
 	}
@@ -159,9 +158,9 @@ public class DatabaseManager {
 		return matterDao;
 	}
 
-	public Dao<Spinneret, Integer> getSpinneretDao() throws SQLException {
+	public Dao<Formation, Integer> getSpinneretDao() throws SQLException {
 		if(spinneretDao==null){
-			spinneretDao=DaoManager.createDao(source, Spinneret.class);
+			spinneretDao=DaoManager.createDao(source, Formation.class);
 		}
 		
 		return spinneretDao;
@@ -250,17 +249,17 @@ public class DatabaseManager {
 		return new ArrayList<Media>();
 	}
 	
-	public List<Spinneret> getAllSpinneret(){
+	public List<Formation> getAllFormation(){
 		try {
 			return getSpinneretDao().queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return new ArrayList<Spinneret>();
+		return new ArrayList<Formation>();
 	}
 	
-	public List<Matter> getMatter(Spinneret spinneret, int semester){
+	public List<Matter> getMatter(Formation spinneret, int semester){
 		try {
 			QueryBuilder<Matter, Integer> query=getMatterDao().queryBuilder();
 			

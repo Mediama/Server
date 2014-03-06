@@ -2,13 +2,13 @@ package entity;
 
 import com.j256.ormlite.field.DatabaseField;
 
-public class Spinneret {
+public class Formation {
 	@DatabaseField(generatedId=true)
 	private Integer id;
 	@DatabaseField(canBeNull=false)
 	private String name;
 	
-	public Spinneret(){
+	public Formation(){
 		
 	}
 
