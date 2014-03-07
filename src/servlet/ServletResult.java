@@ -36,6 +36,7 @@ public class ServletResult {
 	public static final int MISSING_PASSWORD=104;
 	public static final int MISSING_EMAIL=105;
 	public static final int MISSING_MEDIA_ID=106;
+	public static final int MISSING_USER_ID=107;
 	public static final int BAD_INT_FORMAT=200;
 	public static final int BAD_FLOAT_FORMAT=201;
 }

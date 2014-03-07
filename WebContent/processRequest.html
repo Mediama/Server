@@ -5,6 +5,40 @@
 <title>Insert title here</title>
 </head>
 <body>
+/AddMedia
+<form method="POST" action="AddMedia">
+<input type="text" name="title" value="" />
+<input type="text" name="author" value="" />
+<input type="text" name="type" value="" />
+<input type="submit" />
+</form>
+/AssMediaWithMatter
+<form method="POST" action="AssMediaWithMatter">
+<input type="text" name="media_id" value="" />
+<input type="text" name="list_matter_id" value="" />
+<input type="submit" />
+</form>
+GetAllMedia
+<form method="POST" action="GetAllMedia">
+<input type="text" name="matter_id" value="" />
+<input type="submit" />
+</form>
+<form method="POST" action="GetAllMedia">
+<input type="text" name="module_id" value="" />
+<input type="submit" />
+</form>
+<form method="POST" action="GetAllMedia">
+<input type="text" name="formation_id" value="" />
+<input type="submit" />
+</form>
+<form method="POST" action="GetAllMedia">
+<input type="submit" />
+</form>
+GetMedia
+<form method="POST" action="GetMedia">
+<input type="text" name="id" value="" />
+<input type="submit" />
+</form>
 Subscribe
 <form method="POST" action="Subscribe">
 <input type="text" name="login" value="" />
@@ -12,9 +46,9 @@ Subscribe
 <input type="text" name="email" value="" />
 <input type="submit" />
 </form>
-GetMedia
-<form method="POST" action="GetMedia">
-<input type="text" name="id" value="1" />
+GetAvailableMedia
+<form method="POST" action="GetAvailableMedia">
+<input type="text" name="user_id" value="1" />
 <input type="submit" />
 </form>
 </body>

@@ -60,7 +60,7 @@ public class Subscribe extends HttpServlet {
 			}
 			else if(email==null){
 				ServletResult.sendResult(response, ServletResult.MISSING_EMAIL);
-				
+				return;
 			}
 			
 			User user=new User();
@@ -71,15 +71,16 @@ public class Subscribe extends HttpServlet {
 			if(manager.getUserDao().create(user)==1){
 				ServletResult.sendResult(response, ServletResult.SUCCESS);
 				response.setStatus(HttpServletResponse.SC_CREATED);
+				return;
 			}
-			else{
-				ServletResult.sendResult(response, ServletResult.ERROR);
-			}
+			
+			ServletResult.sendResult(response, ServletResult.ERROR);
 		} catch (SQLException | JsonProcessingException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 }

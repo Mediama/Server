@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import storage.DatabaseManager;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import entity.Media;
@@ -72,7 +73,8 @@ public class GetMedia extends HttpServlet {
 			}
 			else{
 				response.getWriter().append(
-						oMap.writeValueAsString(media));
+						oMap.writeValueAsString(new Result(
+								ServletResult.SUCCESS, media)));
 				
 				response.getWriter().close();		
 			}
@@ -81,6 +83,18 @@ public class GetMedia extends HttpServlet {
 			e.printStackTrace();
 			
 			ServletResult.sendResult(response, ServletResult.ERROR);
+		}
+		
+	}
+	
+	private class Result extends ServletResult{
+		@JsonProperty("value")
+		public Media media;
+
+		public Result(int result, Media media) {
+			super(result);
+			
+			this.media=media;
 		}
 		
 	}
